@@ -1,0 +1,18 @@
+{% extends "admin.html" %}
+
+{% block content %}
+<div>
+    <a href="{{ url_for('admin_portal') }}" class="btn btn-secondary">← Go Back</a>
+</div>
+<br>
+<div class="card">
+    <h2>Edit Subject</h2>
+    <form method="POST">
+        <label>Enter new subject name:</label>
+        <br>
+        <input type="text" name="subject_name" class="form-control" value="{{ subject.name }}" required>
+        <br>
+        <button type="submit" class="btn btn-dark">Update Subject</button>
+    </form>
+</div>
+{% endblock %}

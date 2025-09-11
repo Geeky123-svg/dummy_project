@@ -1,0 +1,18 @@
+{% extends "admin.html" %}
+
+{% block content %}
+<div>
+    <a href="{{ url_for('admin_portal') }}" class="btn btn-secondary">← Go Back</a>
+</div>
+<br>
+<div class="card">
+    <h2>Edit Chapter</h2>
+    <form method="POST">
+        <label>Enter new chapter name:</label>
+        <br>
+        <input type="text" name="chapter_name" class="form-control" value="{{ chapter.name }}" required>
+        <br>
+        <button type="submit" class="btn btn-dark">Update Chapter</button>
+    </form>
+</div>
+{% endblock %}

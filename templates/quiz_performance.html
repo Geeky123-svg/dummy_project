@@ -1,0 +1,65 @@
+{% extends "user.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Quiz Performance: {{ quiz.title }}</h2>
+    <h4>Chapter: {{ quiz.chapter.name }}</h4>
+
+    <ul class="list-group">
+        {% for question in questions %}
+            <li class="list-group-item">
+                <strong>Q{{ loop.index }}: {{ question.question_statement }}</strong><br>
+
+                {% set user_answer = user_answers.get(question.id) %}
+
+                {% if user_answer is not none %}
+                    {% if user_answer == question.correct_option %}
+                        <span style="color: green;">
+                            Your Answer: 
+                            {{ {
+                                "A": question.option1,
+                                "B": question.option2,
+                                "C": question.option3,
+                                "D": question.option4
+                            }[user_answer] }} ✔
+                        </span><br>
+                    {% else %}
+                        <span style="color: red;">
+                            Your Answer: 
+                            {{ {
+                                "A": question.option1,
+                                "B": question.option2,
+                                "C": question.option3,
+                                "D": question.option4
+                            }[user_answer] }} ✘
+                        </span><br>
+                    {% endif %}
+                    <span style="color: green;">
+                        Correct Answer: 
+                        {{ {
+                            "A": question.option1,
+                            "B": question.option2,
+                            "C": question.option3,
+                            "D": question.option4
+                        }[question.correct_option] }}
+                    </span>
+                {% else %}
+                    <span style="color: red;">Your Answer: Not Answered</span><br>
+                    <span style="color: green;">
+                        Correct Answer: 
+                        {{ {
+                            "A": question.option1,
+                            "B": question.option2,
+                            "C": question.option3,
+                            "D": question.option4
+                        }[question.correct_option] }}
+                    </span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <br>
+    <a href="{{ url_for('previous_scores') }}" class="btn btn-dark">Back to Quizzes</a>
+</div>
+{% endblock %}

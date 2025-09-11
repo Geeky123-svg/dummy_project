@@ -1,0 +1,93 @@
+{% extends "admin.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Search for Quizzes, Chapters, Subjects, Questions, or Users</h2>
+
+    <form method="GET" action="{{ url_for('admin_search') }}" class="mb-4">
+        <input type="text" name="q" class="form-control" placeholder="Search..." value="{{ query }}">
+        <button type="submit" class="btn btn-dark mt-2">Search</button>
+    </form>
+
+    {% if query %}
+        <h3>Results for "{{ query }}"</h3>
+
+        {% if results.subjects %}
+            <h4>Subjects</h4>
+            <ul class="list-group">
+                {% for subject in results.subjects %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ subject.name }}</span>
+                        <div>
+                            <a href="{{ url_for('edit_subject', subject_id=subject.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ url_for('delete_subject', subject_id=subject.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if results.chapters %}
+            <h4 class="mt-3">Chapters</h4>
+            <ul class="list-group">
+                {% for chapter in results.chapters %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ chapter.name }} ({{ chapter.subject.name }})</span>
+                        <div>
+                            <a href="{{ url_for('edit_chapter', chapter_id=chapter.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ url_for('delete_chapter', chapter_id=chapter.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if results.quizzes %}
+            <h4 class="mt-3">Quizzes</h4>
+            <ul class="list-group">
+                {% for quiz in results.quizzes %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ quiz.title }} ({{ quiz.chapter.name }})</span>
+                        <div>
+                            <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if results.questions %}
+            <h4 class="mt-3">Questions</h4>
+            <ul class="list-group">
+                {% for question in results.questions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ question.question_statement }} (Quiz: {{ question.quiz.title }})</span>
+                        <div>
+                            <a href="{{ url_for('edit_question', question_id=question.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <form method="POST" action="{{ url_for('delete_question') }}" class="d-inline">
+                                <input type="hidden" name="question_id" value="{{ question.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if results.users %}
+            <h4 class="mt-3">Users</h4>
+            <ul class="list-group">
+                {% for user in results.users %}
+                    <li class="list-group-item">{{ user.username }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if not results.subjects and not results.chapters and not results.quizzes and not results.questions and not results.users %}
+            <p class="text-muted">No results found.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
+

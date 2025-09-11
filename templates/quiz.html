@@ -1,0 +1,43 @@
+{% extends "user.html" %}
+{% block content %}
+<h2>{{ quiz.title }} - {{ quiz.chapter.name }}</h2>
+<div id="timer" class="alert alert-danger text-center">
+    Time Left: <span id="time-left"></span>
+</div>
+<div class="scrollable-container">
+    <form id="quiz-form" action="{{ url_for('submit_quiz', quiz_id=quiz.id) }}" method="POST">
+        {% for question in questions %}
+            <div class="card p-3 mb-3">
+                <p><strong>Q{{ loop.index }}: {{ question.question_statement }}</strong></p>
+                <div>
+                    <input type="radio" name="answer_{{ question.id }}" value="A" required> {{ question.option1 }} <br>
+                    <input type="radio" name="answer_{{ question.id }}" value="B"> {{ question.option2 }} <br>
+                    <input type="radio" name="answer_{{ question.id }}" value="C"> {{ question.option3 }} <br>
+                    <input type="radio" name="answer_{{ question.id }}" value="D"> {{ question.option4 }}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </form>
+</div>
+<a href="{{url_for('available_quiz')}}" class="btn btn-secondary mt-3">← Go Back</a>
+<script type="text/javascript">
+    let timeLeft = Number("{{total_minutes}}")*60; // Convert minutes to seconds
+    console.log(timeLeft)
+
+    function updateTimer() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById("time-left").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        
+        if (timeLeft <= 0) {
+            document.getElementById("quiz-form").submit(); // Auto-submit when time is up
+        } else {
+            timeLeft--;
+            setTimeout(updateTimer, 1000);
+        }
+    }
+
+    updateTimer(); // Start the countdown
+</script>
+{% endblock %}

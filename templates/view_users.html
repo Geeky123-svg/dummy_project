@@ -1,0 +1,29 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+<h2>Current Users</h2>
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Qualification</th>
+        <th>Date of Birth</th>
+        <th>Action</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.full_name }}</td>
+        <td>{{ user.qualification }}</td>
+        <td>{{ user.dob }}</td>
+        <td>
+            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

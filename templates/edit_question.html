@@ -1,0 +1,19 @@
+{% extends "admin.html" %}
+
+{% block content %}
+<div>
+    <a href="{{ url_for('manage_quiz', quiz_id=question.quiz_id) }}" class="btn btn-secondary">← Go Back</a>
+</div>
+<br>
+<div class = "card">
+<h2>Edit Question</h2>
+    <form method="POST">
+        <label>Question Statement:</label>
+        <br>
+        <textarea name="question_statement" class="form-control" required>{{ question.question_statement }}</textarea>
+        <br>
+        <button type="submit" class="btn btn-dark">Update Question</button>
+    </form>
+</div>
+
+{% endblock %}

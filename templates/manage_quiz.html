@@ -1,0 +1,124 @@
+{% extends "admin.html" %}
+
+{% block content %}
+<div>
+    <a href="{{ url_for('manage_quizzes', quiz_id=quiz.id) }}" class="btn btn-secondary">← Go Back</a>
+</div>
+<br>
+<h2>Manage Quiz: {{ quiz.title }}</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h3>Questions Preview</h3>
+                <div class="scrollable-container">
+                    {% if questions %}
+                        <div class="d-flex flex-column p-3">
+                            {% for question in questions %}
+                                <div class="card p-3 w-100">
+                                    <p><strong>Q{{ loop.index }}: {{ question.question_statement }}</strong></p>
+                                    <div>
+                                        <input type="radio" name="answer_{{ question.id }}" value="A" required> {{ question.option1 }} <br>
+                                        <input type="radio" name="answer_{{ question.id }}" value="B"> {{ question.option2 }} <br>
+                                        <input type="radio" name="answer_{{ question.id }}" value="C"> {{ question.option3 }} <br>
+                                        <input type="radio" name="answer_{{ question.id }}" value="D"> {{ question.option4 }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted">Nothing to see here...</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h3>Add Question</h3>
+                <form action="{{ url_for('add_question') }}" method="POST"> 
+                    <input type="hidden" name="quiz_id" value="{{ quiz.id }}">     
+                    <div>
+                        <label>Question:</label>
+                        <textarea class="form-control" name="question_statement" rows="3"></textarea>
+                    </div>
+                    <div>
+                        <label>Option A:</label>
+                        <input type="text" class ="form-control" name="option1" required>
+                    </div>
+                    <div>
+                        <label>Option B:</label>
+                        <input type="text" class ="form-control" name="option2" required>
+                    </div>
+                    <div>
+                        <label>Option C:</label>
+                        <input type="text" class ="form-control" name="option3" required>
+                    </div>
+                    <div>
+                        <label>Option D:</label>
+                        <input type="text" class ="form-control" name="option4" required>
+                    </div>
+                    <div>
+                        <label>Correct Option:</label>
+                        <select name="correct_option">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-dark">Add Question</button>
+                </form>
+            </div>
+        </div>
+        <div class = "col md-3">
+            <div class = "card p-3">
+                <h3>Delete Question</h3>
+                <form action="{{ url_for('delete_question') }}" method="post">
+                    <div>
+                        <label for="question_id">Select Question:</label>
+                    </div>
+                    <div>
+                        <select name="question_id" id="question_id">
+                            {% for question in questions %}
+                                <option value="{{ question.id }}">Q{{ loop.index }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-danger">Delete Question</button>
+                </form>
+            </div>
+            <div class = "card p-3">
+                <h2>Update Question</h2>
+                {% if questions %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in questions %}
+                            <tr>
+                                <td>{{ question.question_statement }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_question', question_id=question.id) }}">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-center text-muted">Nothing to see here...</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
