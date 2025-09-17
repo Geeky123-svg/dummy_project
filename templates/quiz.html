@@ -5,7 +5,7 @@
     Time Left: <span id="time-left"></span>
 </div>
 <div class="scrollable-container">
-    <form id="quiz-form" action="{{ url_for('submit_quiz', quiz_id=quiz.id) }}" method="POST">
+    <form id="quiz-form" action="{{ url_for('user_bp.submit_quiz', quiz_id=quiz.id) }}" method="POST">
         {% for question in questions %}
             <div class="card p-3 mb-3">
                 <p><strong>Q{{ loop.index }}: {{ question.question_statement }}</strong></p>
@@ -20,7 +20,7 @@
         <button type="submit" class="btn btn-primary">Submit Quiz</button>
     </form>
 </div>
-<a href="{{url_for('available_quiz')}}" class="btn btn-secondary mt-3">← Go Back</a>
+<a href="{{url_for('user_bp.available_quiz')}}" class="btn btn-secondary mt-3">← Go Back</a>
 <script type="text/javascript">
     let timeLeft = Number("{{total_minutes}}")*60; // Convert minutes to seconds
     console.log(timeLeft)

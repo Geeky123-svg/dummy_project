@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Search for Quizzes, Chapters, Subjects, Questions, or Users</h2>
 
-    <form method="GET" action="{{ url_for('admin_search') }}" class="mb-4">
+    <form method="GET" action="{{ url_for('admin_bp.admin_search') }}" class="mb-4">
         <input type="text" name="q" class="form-control" placeholder="Search..." value="{{ query }}">
         <button type="submit" class="btn btn-dark mt-2">Search</button>
     </form>
@@ -19,8 +19,8 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>{{ subject.name }}</span>
                         <div>
-                            <a href="{{ url_for('edit_subject', subject_id=subject.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="{{ url_for('delete_subject', subject_id=subject.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="{{ url_for('admin_bp.edit_subject', subject_id=subject.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ url_for('admin_bp.delete_subject', subject_id=subject.id) }}" class="btn btn-sm btn-danger">Delete</a>
                         </div>
                     </li>
                 {% endfor %}
@@ -34,8 +34,8 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>{{ chapter.name }} ({{ chapter.subject.name }})</span>
                         <div>
-                            <a href="{{ url_for('edit_chapter', chapter_id=chapter.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="{{ url_for('delete_chapter', chapter_id=chapter.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="{{ url_for('admin_bp.edit_chapter', chapter_id=chapter.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ url_for('admin_bp.delete_chapter', chapter_id=chapter.id) }}" class="btn btn-sm btn-danger">Delete</a>
                         </div>
                     </li>
                 {% endfor %}
@@ -49,8 +49,8 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>{{ quiz.title }} ({{ quiz.chapter.name }})</span>
                         <div>
-                            <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="{{ url_for('admin_bp.edit_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ url_for('admin_bp.delete_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-danger">Delete</a>
                         </div>
                     </li>
                 {% endfor %}
@@ -64,8 +64,8 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>{{ question.question_statement }} (Quiz: {{ question.quiz.title }})</span>
                         <div>
-                            <a href="{{ url_for('edit_question', question_id=question.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                            <form method="POST" action="{{ url_for('delete_question') }}" class="d-inline">
+                            <a href="{{ url_for('admin_bp.edit_question', question_id=question.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <form method="POST" action="{{ url_for('admin_bp.delete_question') }}" class="d-inline">
                                 <input type="hidden" name="question_id" value="{{ question.id }}">
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>

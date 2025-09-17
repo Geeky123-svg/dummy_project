@@ -7,12 +7,12 @@
             {% for score in scores %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>{{ score.quiz.title }} - ({{ score.quiz.chapter.name }}) - Score: {{ score.total_score }}/{{ score.quiz.questions|length }}</span>
-                    <a href="{{ url_for('quiz_performance', quiz_id=score.quiz.id) }}" class="btn btn-primary">Quiz Report</a>
+                    <a href="{{ url_for('user_bp.quiz_performance', quiz_id=score.quiz.id) }}" class="btn btn-primary">Quiz Report</a>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p class="text-muted">No quiz attempts yet.</p>
+        <p class="alert alert-warning mt-3">You have not attempted any Quizzes yet! Click <a href="{{ url_for('user_bp.available_quiz')}}">here</a> to start attempting Quizzes</p>
     {% endif %}
 </div>
 {% endblock %}

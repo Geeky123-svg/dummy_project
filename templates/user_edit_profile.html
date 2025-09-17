@@ -1,0 +1,27 @@
+{% extends "user.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Profile</h2>
+
+    <form method="post" class="mt-3">
+        <div class="mb-3">
+            <label for="full_name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" name="full_name" id="full_name" value="{{ full_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="qualification" class="form-label">Qualification</label>
+            <input type="text" class="form-control" name="qualification" id="qualification" value="{{ qualification }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="dob" class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" name="dob" id="dob" value="{{ dob }}">
+        </div>
+
+        <button type="submit" class="btn btn-success">💾 Save Changes</button>
+        <a href="{{ url_for('user_bp.user_profile') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

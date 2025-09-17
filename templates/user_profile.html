@@ -1,0 +1,49 @@
+{% extends "user.html" %}
+
+{% block content %}
+<h2 class="mb-4">User Profile</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <!-- Profile Picture Card (Fixed Width) -->
+        <div class="col-md-4 d-flex justify-content-center">
+            <div class="card shadow-sm p-4 text-center">
+                <img src="{{ url_for('static', filename='images/profpic.jpg') }}" alt="Profile Picture" class="rounded-circle mb-3" width="150" height="150">
+                <h5>{{ full_name or 'User' }}</h5>
+                <h6>Quizzer</h6>
+            </div>
+        </div>
+
+        <!-- Info Card (Wider, Responsive) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-3">Personal Information</h4>
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Full Name:</th>
+                        <td>{{ full_name or 'Not Provided' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Birth:</th>
+                        <td>{{ dob.strftime('%B %d, %Y') if dob else 'Not Provided' }}</td>
+                    </tr>
+                </table>
+
+                <h4 class="mt-4">Additional Info</h4>
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Qualification:</th>
+                        <td>{{ current_user.qualification or 'Not Provided' }}</td>
+                    </tr>
+                </table>
+
+                <a href="{{ url_for('user_bp.user_edit_profile') }}" class="btn btn-primary mt-3">✏️ Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
