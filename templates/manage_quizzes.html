@@ -3,6 +3,7 @@
 {% block content %}
 <h2>Manage Quizzes</h2>
 <ul>
+    {{message}}
     {% for quiz in quizzes %}
         <div>
             <strong>{{ quiz.title }} ({{ quiz.chapter.name }})</strong> 
@@ -20,7 +21,7 @@
         {% endfor %}
     </select>
     <input type="text" name="title" placeholder="Enter Quiz Title" required>
-    <input type="text" name="time_duration" placeholder="Duration (HH:MM)" required>
+    <input type="text" name="time_duration" placeholder="Duration (HH:MM)" pattern="^\d{2}:\d{2}$" required>
     <button class="btn btn-dark" type="submit">Add Quiz</button>
 </form>
 {% endblock %}

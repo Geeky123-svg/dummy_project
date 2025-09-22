@@ -1,18 +1,37 @@
 {% extends "user.html" %}
+
 {% block content %}
-<div class="container">
-    <h2>Previous Quiz Scores</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">Previous Quiz Scores</h2>
     {% if scores %}
-        <ul class="list-group">
+        <ul class="list-group shadow-sm">
             {% for score in scores %}
+                {% set total_questions = score.quiz.questions|length %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ score.quiz.title }} - ({{ score.quiz.chapter.name }}) - Score: {{ score.total_score }}/{{ score.quiz.questions|length }}</span>
-                    <a href="{{ url_for('user_bp.quiz_performance', quiz_id=score.quiz.id) }}" class="btn btn-primary">Quiz Report</a>
+                    <div>
+                        <strong class="text-dark">{{ score.quiz.title }}</strong> 
+                        <span class="badge bg-secondary ms-2">{{ score.quiz.chapter.subject.name }} - {{ score.quiz.chapter.name }}</span>
+                        <p class="mb-0 mt-1">
+                            Attempted: {{ score.time_stamp.strftime('%Y-%m-%d %H:%M') }}
+                        </p>
+                    </div>
+                    
+                    <div class="text-end">
+                        <span class="badge bg-success fs-6 me-3">
+                            Score: {{ score.total_score }}/{{ total_questions }}
+                        </span>
+                        
+                        <a href="{{ url_for('user_bp.quiz_performance', score_id=score.id) }}" class="btn btn-sm btn-primary">
+                            View Report
+                        </a>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p class="alert alert-warning mt-3">You have not attempted any Quizzes yet! Click <a href="{{ url_for('user_bp.available_quiz')}}">here</a> to start attempting Quizzes</p>
+        <p class="alert alert-warning mt-3">
+            You have not attempted any Quizzes yet! Click <a href="{{ url_for('user_bp.available_quiz')}}">here</a> to start attempting Quizzes.
+        </p>
     {% endif %}
 </div>
 {% endblock %}

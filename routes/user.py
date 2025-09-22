@@ -85,7 +85,7 @@ def user_edit_profile():
         qualification=current_user.qualification,
         dob=current_user.dob.strftime('%Y-%m-%d') if current_user.dob else ''
     )
-
+from sqlalchemy.orm import joinedload
 @user_bp.route('/user/quizzes')
 @login_required
 def available_quiz():
@@ -96,9 +96,10 @@ def available_quiz():
 @user_bp.route('/user/prev')
 @login_required
 def previous_scores():
-    scores=Score.query.filter_by(user_id=current_user.id).all()
-    quizzes = Quiz.query.all()
-    return render_template('previous_quiz.html',scores=scores)
+    scores = Score.query.filter_by(user_id=current_user.id).options(
+        joinedload(Score.quiz).joinedload(Quiz.chapter).joinedload(Chapter.subject)
+    ).all()
+    return render_template('previous_quiz.html', scores=scores)
 
 @user_bp.route('/user/quiz/<int:quiz_id>', methods=['GET', 'POST'])
 @login_required
@@ -114,41 +115,61 @@ def attempt_quiz(quiz_id):
     return render_template('quiz.html', quiz=quiz, questions=questions,total_minutes=total_minutes)
 
 @user_bp.route('/submit_quiz/<int:quiz_id>', methods=['POST'])
+@login_required
 def submit_quiz(quiz_id):
     quiz = Quiz.query.get_or_404(quiz_id)
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
     
     score = 0
-    total_questions = len(questions)
+    user_answers_to_commit = []
+
+    new_score = Score(user_id=current_user.id, quiz_id=quiz_id, total_score=0)
+    db.session.add(new_score)
+    db.session.commit() 
 
     for question in questions:
-        selected_answer = request.form.get(f"answer_{question.id}")
+        selected_answer = request.form.get(f"answer_{question.id}")     
+        if selected_answer and selected_answer == question.correct_option:
+            score += 1
+
         user_answer = UserAnswer(
             user_id=current_user.id,
             question_id=question.id,
-            selected_option=selected_answer if selected_answer else None
+            selected_option=selected_answer if selected_answer else None, 
+            attempt_id=new_score.id 
         )
-        db.session.add(user_answer)
-        if selected_answer and selected_answer == question.correct_option:
-            score += 1
-    new_score = Score(user_id=current_user.id, quiz_id=quiz_id, total_score=score)
-    db.session.add(new_score)
-    db.session.commit()
+        user_answers_to_commit.append(user_answer)
+        
+    new_score.total_score = score
+    db.session.add_all(user_answers_to_commit)
+    db.session.commit() 
     
-    return render_template('quiz_result.html', quiz=quiz, score=score, total_questions=total_questions)
+    return render_template('quiz_result.html', quiz=quiz, score=score, total_questions=len(questions))
 
-@user_bp.route('/quiz/performance/<int:quiz_id>')
+@user_bp.route('/quiz/performance/<int:score_id>')
 @login_required
-def quiz_performance(quiz_id):
-    quiz = Quiz.query.get_or_404(quiz_id)
-    questions = Question.query.filter_by(quiz_id=quiz_id).all()
-    user_score = Score.query.filter_by(user_id=current_user.id, quiz_id=quiz_id).first()
-    user_answers = {}
-    if user_score:
-        for question in questions:
-            user_answer = UserAnswer.query.filter_by(user_id=current_user.id, question_id=question.id).first()
-            user_answers[question.id] = user_answer.selected_option if user_answer else None
-    return render_template('quiz_performance.html', quiz=quiz, questions=questions, user_answers=user_answers)
+def quiz_performance(score_id):
+    user_score = Score.query.get_or_404(score_id)
+    if user_score.user_id != current_user.id:
+        flash('You do not have permission to view this score.', 'danger')
+        return redirect(url_for('user_bp.previous_scores'))
+    quiz = Quiz.query.options(
+        joinedload(Quiz.chapter).joinedload(Chapter.subject)
+    ).get_or_404(user_score.quiz_id)
+    questions = quiz.questions 
+    user_answers_list = UserAnswer.query.filter_by(attempt_id=score_id).all()
+    user_answers_map = {
+        answer.question_id: answer.selected_option
+        for answer in user_answers_list
+    }
+
+    return render_template(
+        'quiz_performance.html',
+        quiz=quiz,
+        questions=questions,
+        user_score=user_score,
+        user_answers=user_answers_map
+    )
 
 @user_bp.route('/user/search', methods=['GET'])
 @login_required

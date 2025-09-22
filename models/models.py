@@ -40,9 +40,11 @@ class UserAnswer(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete="CASCADE"), nullable=False)
     selected_option = db.Column(db.String(255), nullable=True)
-
+    attempt_id = db.Column(db.Integer, db.ForeignKey('score.id', ondelete="CASCADE"), nullable=False)
     user = db.relationship('User', backref='answers')
     question = db.relationship('Question', backref='answers')
+    attempt = db.relationship('Score', backref=db.backref('user_answers', lazy=True, cascade="all, delete-orphan"))
+
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True) 

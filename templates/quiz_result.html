@@ -1,8 +1,23 @@
 {% extends "user.html" %}
+
 {% block content %}
-<div class="container-fluid">
-    <h2>Quiz Results - {{ quiz.title }}</h2>
-    <p>Your Score: <strong>{{ score }}/{{ total_questions }}</strong></p>
-    <a href="{{url_for('user_bp.available_quiz')}}" class="btn btn-secondary">← Go Back</a>
+<div class="container-fluid mt-5 text-center">
+    <h2 class="text-success">Quiz Results - {{ quiz.title }}</h2>
+    <p class="lead">Congratulations on completing the quiz!</p>
+    
+    <div class="card shadow-lg mx-auto" style="max-width: 400px;">
+        <div class="card-body">
+            <h3 class="card-title text-primary">Final Score</h3>
+            <p class="display-4 mb-0 text-success">
+                <strong>{{ score }}/{{ total_questions }}</strong>
+            </p>
+            {% set percentage = (score / total_questions * 100) | round(1) %}
+            <p class="text-muted">({{ percentage }}%)</p>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{url_for('user_bp.available_quiz')}}" class="btn btn-secondary me-2">← Take Another Quiz</a>
+    </div>
 </div>
 {% endblock %}

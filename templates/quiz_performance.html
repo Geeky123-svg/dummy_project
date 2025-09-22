@@ -1,65 +1,79 @@
 {% extends "user.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Quiz Performance: {{ quiz.title }}</h2>
-    <h4>Chapter: {{ quiz.chapter.name }}</h4>
+<div class="container mt-4">
+    <h2 class="mb-2 text-primary">Quiz Performance: {{ quiz.title }}</h2>
+    <h4 class="mb-4 text-secondary">Chapter: {{ quiz.chapter.name }}</h4>
+
+    <div class="alert alert-info text-center">
+        <h4 class="mb-0">
+            Your Score: <strong>{{ user_score.total_score }} / {{ questions|length }}</strong>
+        </h4>
+        <small>Attempted on: {{ user_score.time_stamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+    </div>
 
     <ul class="list-group">
         {% for question in questions %}
-            <li class="list-group-item">
-                <strong>Q{{ loop.index }}: {{ question.question_statement }}</strong><br>
+            {% set user_selection_key = user_answers.get(question.id) %}
+            
+            {% set options = {
+                "A": question.option1,
+                "B": question.option2,
+                "C": question.option3,
+                "D": question.option4
+            } %}
 
-                {% set user_answer = user_answers.get(question.id) %}
+            <li class="list-group-item mt-3 shadow-sm 
+                {% if user_selection_key == question.correct_option %} list-group-item-success
+                {% elif user_selection_key is not none %} list-group-item-danger
+                {% else %} list-group-item-secondary
+                {% endif %}">
+                
+                <p class="mb-2">
+                    <strong>Q{{ loop.index }}:</strong> {{ question.question_statement }}
+                    <span class="badge bg-secondary float-end">{{ question.difficulty|capitalize }}</span>
+                </p>
+                
+                <hr class="my-1">
 
-                {% if user_answer is not none %}
-                    {% if user_answer == question.correct_option %}
-                        <span style="color: green;">
-                            Your Answer: 
-                            {{ {
-                                "A": question.option1,
-                                "B": question.option2,
-                                "C": question.option3,
-                                "D": question.option4
-                            }[user_answer] }} ✔
-                        </span><br>
+                <ul class="list-unstyled mb-0">
+                    {% for key, value in options.items() %}
+                        <li class="py-1 
+                            {% if key == question.correct_option %} text-success fw-bold
+                            {% elif key == user_selection_key %} text-danger fw-bold
+                            {% endif %}">
+                            
+                            {{ key }}. {{ value }} 
+                            
+                            {% if key == question.correct_option %}
+                                <span class="float-end">✅ Correct Answer</span>
+                            {% elif key == user_selection_key %}
+                                <span class="float-end">
+                                    {% if key == question.correct_option %}
+                                        ✅ Your Answer
+                                    {% else %}
+                                        ❌ Your Answer
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="mt-2 pt-2 border-top">
+                    {% if user_selection_key is none %}
+                        <span class="text-secondary fw-bold">Not Answered</span>
+                    {% elif user_selection_key == question.correct_option %}
+                        <span class="text-success fw-bold">Result: Correct!</span>
                     {% else %}
-                        <span style="color: red;">
-                            Your Answer: 
-                            {{ {
-                                "A": question.option1,
-                                "B": question.option2,
-                                "C": question.option3,
-                                "D": question.option4
-                            }[user_answer] }} ✘
-                        </span><br>
+                        <span class="text-danger fw-bold">Result: Incorrect!</span>
                     {% endif %}
-                    <span style="color: green;">
-                        Correct Answer: 
-                        {{ {
-                            "A": question.option1,
-                            "B": question.option2,
-                            "C": question.option3,
-                            "D": question.option4
-                        }[question.correct_option] }}
-                    </span>
-                {% else %}
-                    <span style="color: red;">Your Answer: Not Answered</span><br>
-                    <span style="color: green;">
-                        Correct Answer: 
-                        {{ {
-                            "A": question.option1,
-                            "B": question.option2,
-                            "C": question.option3,
-                            "D": question.option4
-                        }[question.correct_option] }}
-                    </span>
-                {% endif %}
+                </div>
             </li>
         {% endfor %}
     </ul>
     
     <br>
-    <a href="{{ url_for('user_bp.previous_scores') }}" class="btn btn-dark">Back to Quizzes</a>
+    <a href="{{ url_for('user_bp.previous_scores') }}" class="btn btn-dark mb-4">← Back to Scores</a>
 </div>
 {% endblock %}

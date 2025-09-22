@@ -241,7 +241,7 @@ def edit_chapter(chapter_id):
 
     return render_template('edit_chapter.html', chapter=chapter)
 
-
+import re
 @admin_bp.route('/admin/add_quiz', methods=['POST'])
 @login_required
 def add_quiz():
@@ -251,12 +251,15 @@ def add_quiz():
     chapter_id = request.form.get('chapter_id')
     title = request.form.get('title')
     time_duration = request.form.get('time_duration')
+    time_pattern = r'^(?:[01]\d|2[0-3]):[0-5]\d$'
 
+    if not re.fullmatch(time_pattern, time_duration or ""):
+        return redirect(url_for('admin_bp.manage_quizzes',message="Invalid time format.."))
     new_quiz = Quiz(chapter_id=chapter_id, title=title, time_duration=time_duration)
     db.session.add(new_quiz)
     db.session.commit()
     print("new quiz added: ",title)
-    return redirect(url_for('admin_bp.manage_quizzes'))
+    return redirect(url_for('admin_bp.manage_quizzes',message="Quiz created successfully"))
 
 @admin_bp.route('/admin/delete_quiz/<int:quiz_id>')
 @login_required

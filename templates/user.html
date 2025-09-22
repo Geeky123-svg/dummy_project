@@ -52,8 +52,6 @@
         <p>This is the user dashboard</p>
 
         <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-
-            <!-- Attempts Over Time Card -->
             <div class="card">
                 <h3>Quiz Attempts Over Time</h3>
                 {% if no_attempts %}
@@ -63,7 +61,6 @@
                 {% endif %}
             </div>
 
-            <!-- Score Distribution Card -->
             <div class="card">
                 <h3>Score Distribution</h3>
                 {% if no_attempts %}
@@ -78,41 +75,47 @@
 
         {% if not no_attempts %}
         <script>
-            const attemptsCtx = document.getElementById('attemptsChart').getContext('2d');
-            new Chart(attemptsCtx, {
-                type: 'line',
-                data: {
-                    labels: {{ attempts_over_time.labels| tojson }},
-                    datasets: [{
-                        label: 'Attempts',
-                        data: {{ attempts_over_time.data| tojson }},
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        fill: false,
-                        tension: 0.3
-                    }]
-                }
-            });
+        // eslint-disable
 
-            const scoresCtx = document.getElementById('scoresChart').getContext('2d');
-            new Chart(scoresCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['0-50%', '51-70%', '71-85%', '86-100%'],
-                    datasets: [{
-                        label: 'Quizzes Count',
-                        data: [
-                            {{ score_distribution['0-50'] }},
-                            {{ score_distribution['51-70'] }},
-                            {{ score_distribution['71-85'] }},
-                            {{ score_distribution['86-100'] }}
-                        ],
-                        backgroundColor: 'rgba(153, 102, 255, 0.6)'
-                    }]
-                }
-            });
+        const attemptsCtx = document.getElementById('attemptsChart').getContext('2d');
+        new Chart(attemptsCtx, {
+            type: 'line',
+            data: {
+                labels: JSON.parse('{{ attempts_over_time.labels | tojson | safe }}'),
+                datasets: [{
+                    label: 'Attempts',
+                    data: JSON.parse('{{ attempts_over_time.data | tojson | safe }}'),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    fill: false,
+                    tension: 0.3
+                }]
+            }
+        });
+
+        const scoreDistribution = JSON.parse('{{ score_distribution | tojson | safe }}');
+
+        const scoresCtx = document.getElementById('scoresChart').getContext('2d');
+        new Chart(scoresCtx, {
+            type: 'bar',
+            data: {
+                labels: ['0-50%', '51-70%', '71-85%', '86-100%'],
+                datasets: [{
+                    label: 'Quizzes Count',
+                    data: [
+                        scoreDistribution['0-50'],
+                        scoreDistribution['51-70'],
+                        scoreDistribution['71-85'],
+                        scoreDistribution['86-100']
+                    ],
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                }]
+            }
+        });
+
+        // eslint-enable
         </script>
         {% endif %}
-    {% endblock %}
+        {% endblock %}
     </div>
 </body>
 </html>

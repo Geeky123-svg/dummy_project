@@ -1,7 +1,7 @@
 {% extends "user.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <h2>Available Quizzes</h2>
     {% if subjects and subjects|map(attribute='chapters')|map('length')|sum %}
         {% for subject in subjects %}
