@@ -31,13 +31,24 @@
         document.getElementById("time-left").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         
         if (timeLeft <= 0) {
-            document.getElementById("quiz-form").submit(); // Auto-submit when time is up
+            document.getElementById("quiz-form").submit();
         } else {
             timeLeft--;
             setTimeout(updateTimer, 1000);
         }
     }
 
-    updateTimer(); // Start the countdown
+    const form = document.getElementById("quiz-form");
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        
+        // Ask for confirmation
+        if (confirm("Are you sure you want to submit the quiz?")) {
+            form.submit();
+        } else {
+        }
+    });
+
+    updateTimer(); 
 </script>
 {% endblock %}

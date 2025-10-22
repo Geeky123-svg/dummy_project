@@ -15,9 +15,13 @@
             <p class="text-muted">({{ percentage }}%)</p>
         </div>
     </div>
-    
-    <div class="mt-4">
-        <a href="{{url_for('user_bp.available_quiz')}}" class="btn btn-secondary me-2">← Take Another Quiz</a>
+    <div class="d-flex-align-items-center">
+        <div class="mt-4">
+            <a href="{{url_for('user_bp.quiz_performance',score_id=score_id)}}" class="btn btn-primary me-2">View Detailed report</a>
+        </div>
+        <div class="mt-4">
+            <a href="{{url_for('user_bp.available_quiz')}}" class="btn btn-secondary me-2">← Take Another Quiz</a>
+        </div>
     </div>
 </div>
 {% endblock %}

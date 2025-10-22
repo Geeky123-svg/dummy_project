@@ -3,6 +3,17 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Previous Quiz Scores</h2>
+    <div class="btn-group">
+            <a href="{{ url_for('user_bp.previous_scores', sort_by='desc') }}" 
+               class="btn btn-sm btn-outline-primary {% if request.args.get('sort_by', 'desc') == 'desc' %}active{% endif %}">
+               Latest First
+            </a>
+            <a href="{{ url_for('user_bp.previous_scores', sort_by='asc') }}" 
+               class="btn btn-sm btn-outline-primary {% if request.args.get('sort_by') == 'asc' %}active{% endif %}">
+               Oldest First
+            </a>
+        </div>
+    </div>
     {% if scores %}
         <ul class="list-group shadow-sm">
             {% for score in scores %}

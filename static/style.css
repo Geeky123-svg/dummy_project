@@ -28,7 +28,7 @@
     position: fixed;
     width: 250px;
     height: 100vh;
-    background-color: #333;
+    background-color: #000000;
     padding: 20px;
     color: white;
     display: flex;
@@ -47,7 +47,7 @@
     font-size: 18px;
     cursor: pointer;
     border: none;
-    background-color: #444;
+    background-color: #000000;
     color: white;
     text-align: left;
     padding-left: 15px;

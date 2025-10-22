@@ -37,7 +37,13 @@
             <option value="D" {% if question.correct_option=='D' %}selected{% endif %}>Option 4</option>
         </select>
         <br>
-
+        <label>Difficulty:</label>
+        <select name="difficulty" class="form-control" required>
+            <option value="easy" {% if question.difficulty=='easy' %}selected{% endif %}>Easy</option>
+            <option value="medium" {% if question.difficulty=='medium' %}selected{% endif %}>Medium</option>
+            <option value="hard" {% if question.difficulty=='hard' %}selected{% endif %}>Hard</option>
+        </select>
+        <br>
         <button type="submit" class="btn btn-dark">Update Question</button>
     </form>
 </div>

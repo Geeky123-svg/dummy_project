@@ -89,16 +89,27 @@ from sqlalchemy.orm import joinedload
 @user_bp.route('/user/quizzes')
 @login_required
 def available_quiz():
+    print("Function has been called")
     subjects = Subject.query.outerjoin(Chapter).outerjoin(Quiz).all()
     quizzes = Quiz.query.all() 
+    print("Quizzes fetched:", quizzes)
+    print("Subjects fetched:", subjects)
     return render_template('available_quiz.html',subjects=subjects,quizzes=quizzes)
 
 @user_bp.route('/user/prev')
 @login_required
 def previous_scores():
-    scores = Score.query.filter_by(user_id=current_user.id).options(
-        joinedload(Score.quiz).joinedload(Quiz.chapter).joinedload(Chapter.subject)
-    ).all()
+    sort_by = request.args.get('sort_by', 'desc')
+    query = Score.query.filter_by(user_id=current_user.id)
+
+    if sort_by == 'asc':
+        scores = query.order_by(Score.time_stamp.asc()).options(
+            joinedload(Score.quiz).joinedload(Quiz.chapter).joinedload(Chapter.subject)
+        ).all()
+    else:
+        scores = query.order_by(Score.time_stamp.desc()).options(
+            joinedload(Score.quiz).joinedload(Quiz.chapter).joinedload(Chapter.subject)
+        ).all()
     return render_template('previous_quiz.html', scores=scores)
 
 @user_bp.route('/user/quiz/<int:quiz_id>', methods=['GET', 'POST'])
@@ -144,7 +155,7 @@ def submit_quiz(quiz_id):
     db.session.add_all(user_answers_to_commit)
     db.session.commit() 
     
-    return render_template('quiz_result.html', quiz=quiz, score=score, total_questions=len(questions))
+    return render_template('quiz_result.html', quiz=quiz, score=score, total_questions=len(questions), score_id=new_score.id)
 
 @user_bp.route('/quiz/performance/<int:score_id>')
 @login_required
@@ -162,13 +173,28 @@ def quiz_performance(score_id):
         answer.question_id: answer.selected_option
         for answer in user_answers_list
     }
+    correct_count = 0
+    incorrect_count = 0
+    unattempted_count = 0
+    for question in questions:
+        user_selection_key = user_answers_map.get(question.id)
+        
+        if user_selection_key is None:
+            unattempted_count += 1
+        elif user_selection_key == question.correct_option:
+            correct_count += 1
+        else:
+            incorrect_count += 1
 
     return render_template(
         'quiz_performance.html',
         quiz=quiz,
         questions=questions,
         user_score=user_score,
-        user_answers=user_answers_map
+        user_answers=user_answers_map,
+        correct_count=correct_count,
+        incorrect_count=incorrect_count,
+        unattempted_count=unattempted_count
     )
 
 @user_bp.route('/user/search', methods=['GET'])

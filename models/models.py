@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
 
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True, nullable=False) 
+    name = db.Column(db.String(255), unique=True, nullable=False)
 
 class Chapter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,7 +31,6 @@ class Quiz(db.Model):
     title = db.Column(db.String(255), nullable=False) 
     date_of_quiz = db.Column(db.DateTime, default=datetime.utcnow)
     time_duration = db.Column(db.String(5))
-
     chapter = db.relationship('Chapter', backref=db.backref('quizzes', lazy=True, cascade="all, delete-orphan"))
 
 

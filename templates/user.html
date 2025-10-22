@@ -28,7 +28,7 @@
     <div class="sidebar">
         <h2>User Panel</h2>
         <form action="{{ url_for('user_bp.user_portal') }}" method="get">
-            <button type="submit"> Home</button>
+            <button type="submit"> Home </button>
         </form>
         <form action="{{ url_for('user_bp.user_profile') }}" method="get">
             <button type="submit"> Your Profile</button>
@@ -50,71 +50,6 @@
         {% block content %}
         <h1>Welcome {{ username }}!</h1>
         <p>This is the user dashboard</p>
-
-        <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-            <div class="card">
-                <h3>Quiz Attempts Over Time</h3>
-                {% if no_attempts %}
-                    <p style="color: gray;">You haven’t attempted any quizzes yet.</p>
-                {% else %}
-                    <canvas id="attemptsChart"></canvas>
-                {% endif %}
-            </div>
-
-            <div class="card">
-                <h3>Score Distribution</h3>
-                {% if no_attempts %}
-                    <p style="color: gray;">No quiz scores available.</p>
-                {% else %}
-                    <canvas id="scoresChart"></canvas>
-                {% endif %}
-            </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-        {% if not no_attempts %}
-        <script>
-        // eslint-disable
-
-        const attemptsCtx = document.getElementById('attemptsChart').getContext('2d');
-        new Chart(attemptsCtx, {
-            type: 'line',
-            data: {
-                labels: JSON.parse('{{ attempts_over_time.labels | tojson | safe }}'),
-                datasets: [{
-                    label: 'Attempts',
-                    data: JSON.parse('{{ attempts_over_time.data | tojson | safe }}'),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false,
-                    tension: 0.3
-                }]
-            }
-        });
-
-        const scoreDistribution = JSON.parse('{{ score_distribution | tojson | safe }}');
-
-        const scoresCtx = document.getElementById('scoresChart').getContext('2d');
-        new Chart(scoresCtx, {
-            type: 'bar',
-            data: {
-                labels: ['0-50%', '51-70%', '71-85%', '86-100%'],
-                datasets: [{
-                    label: 'Quizzes Count',
-                    data: [
-                        scoreDistribution['0-50'],
-                        scoreDistribution['51-70'],
-                        scoreDistribution['71-85'],
-                        scoreDistribution['86-100']
-                    ],
-                    backgroundColor: 'rgba(153, 102, 255, 0.6)'
-                }]
-            }
-        });
-
-        // eslint-enable
-        </script>
-        {% endif %}
         {% endblock %}
     </div>
 </body>

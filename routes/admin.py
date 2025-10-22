@@ -83,6 +83,7 @@ def add_question():
         option3 = request.form.get('option3')
         option4 = request.form.get('option4')
         correct_option = request.form.get('correct_option')
+        difficulty = request.form.get('difficulty')
         
         print(f"Quiz ID: {quiz_id}, Question: {question_statement}, Options: {option1}, {option2}, {option3}, {option4}, Correct: {correct_option}")
 
@@ -93,7 +94,8 @@ def add_question():
             option2=option2,
             option3=option3,
             option4=option4,
-            correct_option=correct_option
+            correct_option=correct_option,
+            difficulty=difficulty
         )
         db.session.add(new_question)
         db.session.commit()
@@ -132,6 +134,7 @@ def edit_question(question_id):
         question_to_update.option3 = request.form.get('option3')
         question_to_update.option4 = request.form.get('option4')
         question_to_update.correct_option = request.form.get('correct_option')
+        question_to_update.difficulty = request.form.get('difficulty') 
 
         db.session.commit()
         return redirect(url_for('admin_bp.manage_quiz', quiz_id=question_to_update.quiz_id))
